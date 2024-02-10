@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {PublisherCardComponent} from "./publisher-card/publisher-card.component";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import {NbButtonModule, NbLayoutModule} from "@nebular/theme";
+import {MatButton} from "@angular/material/button";
 
 export type Publisher = {
   publisher: string;
@@ -20,7 +22,8 @@ export type Domain = {
   imports: [
     PublisherCardComponent,
     CommonModule,
-    FormsModule
+    FormsModule,
+    MatButton,
   ],
   templateUrl: './publishers-container.component.html',
   styleUrl: './publishers-container.component.css'

@@ -1,7 +1,7 @@
 <div class="publishers-container">
     <div>
       <button (click)="toggleNewPublisher()">Add publisher</button>
-      <div class="form" *ngIf="isAddNewPublisher">
+<div class="form" *ngIf="isAddNewPublisher">
       <input type="text" [(ngModel)]="_publisher.publisher" />
       <button (click)="addPublisher()">Save</button>
       </div>

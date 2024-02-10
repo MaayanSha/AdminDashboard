@@ -13,6 +13,7 @@ import {FormsModule} from "@angular/forms";
 export class DomainCardComponent {
   @Input() domain!: Domain;
   isEdit: boolean = false;
+  isDelete: boolean = false;
   _domain!: Domain;
 
   constructor() {
@@ -26,9 +27,17 @@ export class DomainCardComponent {
     this.isEdit = !this.isEdit;
   }
 
+  toggleDelete() {
+    this.isDelete = !this.isDelete;
+  }
+
   editDomain() {
     this.domain = JSON.parse(JSON.stringify(this._domain));
     this.toggleEdit()
 
+  }
+
+  deleteDomain() {
+    // delete domain
   }
 }
