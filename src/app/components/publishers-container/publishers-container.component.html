@@ -1,0 +1,12 @@
+<div class="publishers-container">
+    <div>
+      <button (click)="toggleNewPublisher()">Add publisher</button>
+      <div class="form" *ngIf="isAddNewPublisher">
+      <input type="text" [(ngModel)]="_publisher.publisher" />
+      <button (click)="addPublisher()">Save</button>
+      </div>
+    </div>
+    <div>
+      <app-publisher-card *ngFor="let publisher of data" [publisher]="publisher"></app-publisher-card>
+    </div>
+</div>
