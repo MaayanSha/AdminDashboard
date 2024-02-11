@@ -5,7 +5,9 @@
   height: 100px;
   left: 200px;
   background: #FAFAFB;
-  padding:20px
+  padding:20px;
+  color: #004946;
+  font-size: 17px;
 }
 
 .publishers {

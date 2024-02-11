@@ -11,7 +11,10 @@
     <input type="text" [(ngModel)]="newDomain.desktopAds">
     <button (click)="addDomain()">Save</button>
   </div>
-  <div class="publisher-card-container">
-    <app-domain-card *ngFor="let domain of publisher.domains" [domain]="domain"></app-domain-card>
+  <div class="publisher-card-container" *ngIf="!isLoading">
+    <app-domain-card *ngFor="let domain of publisher.domains" [domain]="domain" [publisher]="publisher.publisher" (deletedEvent)="updateList()"></app-domain-card>
+  </div>
+  <div *ngIf="isLoading">
+    Loading...
   </div>
 </div>

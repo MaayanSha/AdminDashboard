@@ -2,8 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {PublisherCardComponent} from "./publisher-card/publisher-card.component";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {NbButtonModule, NbLayoutModule} from "@nebular/theme";
 import {MatButton} from "@angular/material/button";
+import {publisherDataServices} from "../../services/publisherDataServices";
+
 
 export type Publisher = {
   publisher: string;
@@ -31,58 +32,43 @@ export type Domain = {
 export class PublishersContainerComponent implements OnInit {
   _publisher!: Publisher;
   isAddNewPublisher: boolean = false;
+  data: Publisher[] = []
   constructor() {
   }
 
+  //on init get all publishers from the api
   ngOnInit(): void {
     this._publisher = {
       publisher: '',
       domains: []
     }
+    this.getPublishers().then(res => {
+      if (res.error) return console.error(res.error);
+      this.data = res
+    });
   }
 
-  //fetch here the data from the server
-  data: Array<Publisher> = [
-    {
-      publisher: 'publisher 1',
-      domains: [
-        {
-          domain: "bla.com",
-          desktopAds: 5,
-          mobileAds: 3,
-        },
-        {
-          domain: "bla1.com",
-          desktopAds: 2,
-          mobileAds: 30,
-        }
-      ]
-    },
-    {
-      publisher: 'publisher 2',
-      domains: [
-        {
-          domain: "gar.com",
-          desktopAds: 0,
-          mobileAds: 4,
-        },
-        {
-          domain: "gar.com",
-          desktopAds: 5,
-          mobileAds: 3,
-        }
-      ]
-    }
-  ]
+  //get all publishers from the api
+  async getPublishers() {
+    return await publisherDataServices.getPublishers();
+  }
+
+  //add a new publisher to the api
+  async addPublisher(publisher: Publisher) {
+    return await publisherDataServices.addPublisher(publisher);
+  }
 
   toggleNewPublisher() {
     //toggle method for showing the add new publisher form
     this.isAddNewPublisher = !this.isAddNewPublisher;
   }
 
-  addPublisher() {
+  newPublisher() {
     //insert method for adding a new publisher to the api
-    this.data.push(this._publisher);
+    this.addPublisher(this._publisher).then(res => {
+      if(res.error) return console.error(res.error);
+      this.data.push(res)
+    });
     this.toggleNewPublisher();
   }
 }

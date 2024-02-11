@@ -3,6 +3,7 @@ import {Domain, Publisher} from "../publishers-container.component";
 import {DomainCardComponent} from "../domain-card/domain-card.component";
 import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {publisherDataServices, requestProps} from "../../../services/publisherDataServices";
 
 @Component({
   selector: 'app-publisher-card',
@@ -19,6 +20,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 export class PublisherCardComponent {
   @Input() publisher!: Publisher;
   isEdit: boolean = false;
+  isLoading: boolean = false;
   newDomain!: Domain;
 
   constructor() {
@@ -33,18 +35,54 @@ export class PublisherCardComponent {
     }
   }
 
-  toggleEdit() {
-    this.isEdit = !this.isEdit;
+  //add the new domain to the database using the publisherDataServices
+  async addDomainAPI(publisher:string, newDomain:Domain){
+    const APIRequest: requestProps = {
+      publisher: publisher,
+      domain: newDomain.domain,
+      desktopAds: newDomain.desktopAds,
+      mobileAds: newDomain.mobileAds,
+    }
+    return await publisherDataServices.addDomain(APIRequest);
   }
 
   //add the new domain to the publisher
   addDomain() {
-    this.publisher.domains.push(this.newDomain);
+    this.isLoading = true
+    //add the new domain to the publisher object on loading mode
+    //add the new domain to the database
+    this.addDomainAPI(this.publisher.publisher, this.newDomain).then(res => {
+      if (res.error) {
+        //if there is an error, remove the domain from the publisher object
+        this.isLoading = false;
+        return console.error(res.error);
+      }
+      //if the domain was added successfully, update the publisher object locally
+      this.publisher.domains.push(this.newDomain);
+      this.isLoading = false;
+    });
     this.newDomain = {
       domain: '',
       desktopAds: 0,
       mobileAds: 0
     }
     this.toggleEdit()
+  }
+
+  //when receiving an event signal from domain card, re-fetch the publisher's domains
+  updateList = () => {
+    const request: requestProps = {
+      publisher: this.publisher.publisher,
+    }
+    publisherDataServices.getPublishersDomains(request).then(res => {
+      if (res.error) {
+        return console.error(res.error);
+      }
+      this.publisher = res;
+    });
+  }
+
+  toggleEdit() {
+    this.isEdit = !this.isEdit;
   }
 }
