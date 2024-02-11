@@ -52,15 +52,15 @@ export class PublisherCardComponent {
     //add the new domain to the publisher object on loading mode
     //add the new domain to the database
     this.addDomainAPI(this.publisher.publisher, this.newDomain).then(res => {
-      if (res.error) {
-        //if there is an error, remove the domain from the publisher object
-        this.isLoading = false;
-        return console.error(res.error);
-      }
       //if the domain was added successfully, update the publisher object locally
-      this.publisher.domains.push(this.newDomain);
+      this.publisher.domains.push(res);
       this.isLoading = false;
-    });
+    }).catch(err => {
+      if (err.response.status === 409){
+        alert('Falied adding domain. Name already exists!')
+        this.isLoading = false;
+      }
+    })
     this.newDomain = {
       domain: '',
       desktopAds: 0,
@@ -85,4 +85,5 @@ export class PublisherCardComponent {
   toggleEdit() {
     this.isEdit = !this.isEdit;
   }
+
 }
